@@ -1,0 +1,4 @@
+# custom
+.ipynb_checkpoints
+.vscode
+__pycache__
