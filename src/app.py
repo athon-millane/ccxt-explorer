@@ -7,6 +7,7 @@ from datetime import datetime
 import explorer
 import cointegration
 import stochastic
+import distributions
 
 def main():
     create_layout()
@@ -26,7 +27,8 @@ def create_layout():
     app_mode = st.sidebar.selectbox("Please select a page", ["Homepage",
                                                              "Crypto Explorer",
                                                              "Cointegration",
-                                                             "Stochastic Simulation"
+                                                             "Stochastic Simulation",
+                                                             "Distributions"
                                                             ])
 
     if app_mode == 'Homepage':
@@ -40,6 +42,9 @@ def create_layout():
     
     elif app_mode == "Stochastic Simulation":
         stochastic.load_page()
+
+    elif app_mode == "Distributions":
+        distributions.load_page()
 
 if __name__ == '__main__':
     main()
