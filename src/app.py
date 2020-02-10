@@ -8,6 +8,7 @@ import explorer
 import cointegration
 import stochastic
 import distributions
+import fit_sde
 
 def main():
     create_layout()
@@ -28,7 +29,8 @@ def create_layout():
                                                              "Crypto Explorer",
                                                              "Cointegration",
                                                              "Stochastic Simulation",
-                                                             "Distributions"
+                                                             "Distributions",
+                                                             "Fit SDE"
                                                             ])
 
     if app_mode == 'Homepage':
@@ -45,6 +47,10 @@ def create_layout():
 
     elif app_mode == "Distributions":
         distributions.load_page()
+
+    elif app_mode == "Fit SDE":
+        fit_sde.load_page()
+
 
 if __name__ == '__main__':
     main()

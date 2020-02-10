@@ -6,3 +6,4 @@ seaborn==0.10.0
 numpy==1.18.1
 pandas==0.25.3
 scipy==1.4.1
+cma==2.7.0

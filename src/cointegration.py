@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from utils import load_data, get_keys, get_names, get_market_cap, get_history
+from utils.data import load_data, get_keys, get_names, get_market_cap, get_history
 
 def load_page():
 

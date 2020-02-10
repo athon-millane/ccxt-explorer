@@ -3,7 +3,7 @@ import streamlit as st
 import plotly.graph_objects as go
 from datetime import datetime
 
-from utils import load_data, get_keys, get_names, get_ohlcv
+from utils.data import load_data, get_keys, get_names, get_ohlcv
 
 def load_page():
 

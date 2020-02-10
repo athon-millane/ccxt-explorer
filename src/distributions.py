@@ -1,10 +1,11 @@
 import streamlit as st
-from utils import load_data, get_keys, get_names, get_market_cap, get_history
-from cointegration import find_cointegrated_pairs
 import statsmodels.api as sm
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from utils.data import load_data, get_keys, get_names, get_market_cap, get_history
+from cointegration import find_cointegrated_pairs
 
 def load_page():
 
