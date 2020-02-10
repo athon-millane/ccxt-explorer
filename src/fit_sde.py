@@ -59,7 +59,7 @@ def load_page():
     st.latex(r'\text{{Higuchi Fractal Dimension: }} {0:0.3f} \space\Bigm\lvert '.format(hfd(y_real['z'].values)) \
     + r'\text{{ Hurst Exponent: }} {0:0.3f}'.format(hurst(y_real['z'].values)))
 
-    st.header('---')
+    st.markdown(r'---')
 
     # ---------------- Fit SDE to data with CMA-ES -------------- # 
     import cma
@@ -144,7 +144,7 @@ def load_page():
     st.latex(r'\text{{Higuchi Fractal Dimension: }} {0:0.3f} \space\Bigm\lvert '.format(hfd(y_sim)) \
     + r'\text{{ Hurst Exponent: }} {0:0.3f}'.format(hurst(y_sim)))
 
-    st.header('---')
+    st.markdown(r'---')
     from scipy.stats import norm, entropy
     import numpy.random as r
 

@@ -24,14 +24,15 @@ def load_homepage() -> None:
 
 def create_layout():
 
-    st.sidebar.title("Menu")
-    app_mode = st.sidebar.selectbox("Please select a page", ["Homepage",
-                                                             "Crypto Explorer",
+    st.sidebar.latex(r"\text{\Huge{Evolved SDEs}}")
+    st.sidebar.latex(r"\textit{Created by Athon Millane}")
+    st.sidebar.markdown(r"---")
+    app_mode = st.sidebar.selectbox("Please select a page", ["Crypto Explorer",
                                                              "Cointegration",
                                                              "Stochastic Simulation",
                                                              "Distributions",
                                                              "Fit SDE"
-                                                            ])
+                                                            ], index=4)
 
     if app_mode == 'Homepage':
         load_homepage()
