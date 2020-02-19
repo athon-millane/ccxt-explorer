@@ -2,7 +2,7 @@ import streamlit as st
 import ccxt
 import pandas as pd
 
-@st.cache(allow_output_mutation=True)
+# @st.cache(allow_output_mutation=True)
 def load_data():
     exception = False
     try: 
@@ -16,13 +16,13 @@ def get_keys(markets, base='USDT'):
     keys = [k for k in markets.keys() if k[-len(base):] == base]
     return pd.Series(keys).sort_values().values
 
-@st.cache()
+# @st.cache()
 def get_names():
     ex = ccxt.bittrex(); ex.load_markets()
     names = {c['id']: c['name'] for c in ex.currencies.values()}
     return names
     
-@st.cache()
+# @st.cache()
 def get_ohlcv(market='BTC/USDT', timeframe='1d', limit=2000):
     """
     Fetches ohlcv data and returns in dataframe format.
@@ -33,7 +33,7 @@ def get_ohlcv(market='BTC/USDT', timeframe='1d', limit=2000):
     df = df.set_index('time')
     return df
 
-@st.cache()
+# @st.cache()
 def get_history(keys, timeframe='1h', limit=100, dimension='close'):
     """
     Will provide history across list of markets (keys) for a given dimension ('open','high','low','close','volume').

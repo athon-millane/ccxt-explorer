@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import scipy.stats as sts
 
 from utils.data import load_data, get_keys, get_names, get_market_cap, get_history
 from cointegration import find_cointegrated_pairs
@@ -44,16 +45,51 @@ def load_page():
 
     df_x = pd.DataFrame({'x1':x1, 'r*x2':r*x2, 'z':x1 - r*x2}, index=data_close.index)
 
+    def z_(y):
+        return (y - y.mean())/y.std()
+
+    def z_cutoff(y, c=1):
+        z = z_(y)
+        return z[abs(z) > c]
+
+    def get_mask(bins, mask_type=2):
+        val_mask = bins.copy()
+        if mask_type == 1:
+            mask = lambda x: abs(x) < 1
+            val_mask[mask(bins)] = 1
+            val_mask[~mask(bins)] = abs(val_mask[~mask(bins)])**2
+        elif mask_type == 2:
+            val_mask = (abs(val_mask)**2+1)
+        return val_mask
+
+    def custom_kde(y_real,ax,c='green'):
+        h,e = np.histogram(z_(y_real), bins=100)
+        e = e[:-1]
+        mask = get_mask(e); h = mask*h
+        ax.set_title('masked pde')
+        ax.bar(e, h/((e[1]-e[0])*(h.sum())), width = e[1] - e[0], color='tab:blue')
+        resamples = np.random.choice(e, size=100000, p=h/h.sum())
+        rkde = sts.gaussian_kde(resamples)
+        ax.plot(e, rkde.pdf(x=e), color='tab:red', label='resampled KDE')
+
     # Plot
     st.latex(r'\text{Regressed residual: } z = x_1 - (r\times x_2)')
-    fig1,axs = plt.subplots(3, 2, figsize=(16,8))
+    fig1,axs = plt.subplots(3, 3, figsize=(16,8))
+    y_real = df_x[['z']]
+    fig1,axs = plt.subplots(3, 3, figsize=(16,8))
     y_real = df_x[['z']]
     _=sns.lineplot(data=y_real, ax=axs[0,0], color='green').set_title("time series")
-    _=sns.distplot(y_real, ax=axs[0,1], bins=100, color='green').set_title("distribution")
+    _=sns.distplot(y_real, ax=axs[0,1], bins=100, color='green').set_title("pde")
+    custom_kde(y_real, ax=axs[0,2], c='green')
+
     _=sns.lineplot(data=pd.Series(y_real['z']).diff(), ax=axs[1,0], color='purple').set_title("time series")
-    _=sns.distplot(pd.Series(y_real['z']).diff(), ax=axs[1,1], bins=100, color='purple').set_title("distribution")
+    _=sns.distplot(y_real.diff(), ax=axs[1,1], bins=100, color='purple').set_title("pde")
+    custom_kde(y_real.diff()[1:], ax=axs[1,2], c='purple')
+
     _=sns.lineplot(data=pd.Series(y_real['z']).diff().diff().diff(), ax=axs[2,0], color='orange').set_title("time series")
-    _=sns.distplot(pd.Series(y_real['z']).diff().diff().diff(), ax=axs[2,1], bins=100, color='orange').set_title("distribution")
+    _=sns.distplot(pd.Series(y_real['z']).diff().diff().diff(), ax=axs[2,1], bins=100, color='orange').set_title("pde")
+    custom_kde(pd.Series(y_real['z']).diff().diff().diff()[3:], ax=axs[2,2], c='orange')
+
     plt.tight_layout()
     st.pyplot(fig1) 
     st.latex(r'\text{{Higuchi Fractal Dimension: }} {0:0.3f} \space\Bigm\lvert '.format(hfd(y_real['z'].values)) \
@@ -130,15 +166,21 @@ def load_page():
     
     st.latex(r'\text{Ornstein Uhlenbeck Process: } d r_t = a(b - r_t)dt + \sigma r_t d W_t')
     
-    fig2,axs = plt.subplots(3, 2, figsize=(16,8))
-    for i in range(len(examples)):
-        y_sim = match(examples[i], df_x['z'])
-        _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=y_sim, ax=axs[0,0], color='green').set_title("time series")
-        _=sns.distplot(y_sim, ax=axs[0,1], bins=100, color='green').set_title("distribution")
-        _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=pd.Series(y_sim).diff(), ax=axs[1,0], color='purple').set_title("time series")
-        _=sns.distplot(pd.Series(y_sim).diff(), ax=axs[1,1], bins=100, color='purple').set_title("distribution")
-        _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=pd.Series(y_sim).diff().diff(), ax=axs[2,0], color='orange').set_title("time series")
-        _=sns.distplot(pd.Series(y_sim).diff().diff(), ax=axs[2,1], bins=100, color='orange').set_title("distribution")
+    fig2,axs = plt.subplots(3, 3, figsize=(16,8))
+    
+    y_sim = match(examples[0], df_x['z'])
+    _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=y_sim, ax=axs[0,0], color='green').set_title("time series")
+    _=sns.distplot(y_sim, ax=axs[0,1], bins=100, color='green').set_title("distribution")
+    custom_kde(y_sim, ax=axs[0,2])
+    
+    _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=pd.Series(y_sim).diff(), ax=axs[1,0], color='purple').set_title("time series")
+    _=sns.distplot(pd.Series(y_sim).diff(), ax=axs[1,1], bins=100, color='purple').set_title("distribution")
+    custom_kde(y_sim, ax=axs[1,2])
+    
+    _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=pd.Series(y_sim).diff().diff(), ax=axs[2,0], color='orange').set_title("time series")
+    _=sns.distplot(pd.Series(y_sim).diff().diff(), ax=axs[2,1], bins=100, color='orange').set_title("distribution")
+    custom_kde(y_sim, ax=axs[2,2])
+    
     plt.tight_layout()
     st.pyplot(fig2) 
     st.latex(r'\text{{Higuchi Fractal Dimension: }} {0:0.3f} \space\Bigm\lvert '.format(hfd(y_sim)) \
