@@ -175,11 +175,11 @@ def load_page():
     
     _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=pd.Series(y_sim).diff(), ax=axs[1,0], color='purple').set_title("time series")
     _=sns.distplot(pd.Series(y_sim).diff(), ax=axs[1,1], bins=100, color='purple').set_title("distribution")
-    custom_kde(y_sim, ax=axs[1,2])
+    custom_kde(pd.Series(y_sim).diff()[1:], ax=axs[1,2])
     
     _=sns.lineplot(x=np.arange(0,len(y_sim),1), y=pd.Series(y_sim).diff().diff(), ax=axs[2,0], color='orange').set_title("time series")
     _=sns.distplot(pd.Series(y_sim).diff().diff(), ax=axs[2,1], bins=100, color='orange').set_title("distribution")
-    custom_kde(y_sim, ax=axs[2,2])
+    custom_kde(pd.Series(y_sim).diff().diff()[3:], ax=axs[2,2])
     
     plt.tight_layout()
     st.pyplot(fig2) 
