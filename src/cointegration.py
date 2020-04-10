@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from utils.data import load_data, get_keys, get_names, get_market_cap, get_history
+from utils.data import load_data, get_keys, get_names, top_markets, get_history
 
 def load_page():
 
@@ -23,11 +23,12 @@ def load_page():
     st.sidebar.title("Total Cointegration")
     base = st.sidebar.selectbox('Select base', ['USDT', 'BTC', 'ETH'])
     resolution = st.sidebar.selectbox('Select resulution', ['1d', '1h', '1m'])
-    window = st.sidebar.slider('Select window', min_value=100, max_value=1000, value=500)
-    keys = get_market_cap(markets, base)
-    range_ = st.sidebar.slider('Choose top n assets by volume:', min_value=10, max_value=len(keys))
-    data_close = get_history(keys[:range_], timeframe=resolution, limit=window)
-    data_close = data_close.dropna()
+    window = st.sidebar.slider('Select window', min_value=100, value=500, max_value=2000)
+    keys = top_markets(quote='USDT')
+    range_ = st.sidebar.slider('Choose top n assets by volume:', min_value=5, max_value=len(keys))
+    
+    data_close = get_history(keys[:range_], timeframe=resolution, limit=2000)
+    data_close = data_close.dropna().head(window)
     scores, pvalues, pairs = find_cointegrated_pairs(data_close)
     
     title.header('Cointegration matrix')
@@ -57,7 +58,7 @@ def load_page():
     st.sidebar.title("Pairs Cointegration")
 
     # Choose pairs
-    keys = get_market_cap(markets, base)
+    keys = top_markets(quote='USDT')
     pair = st.sidebar.selectbox('Select pair', df_['pair'])
     [market1, market2] = pair.split(' -- ')
     st.header('Pairs Cointegration: {} vs {}'.format(market1, market2))

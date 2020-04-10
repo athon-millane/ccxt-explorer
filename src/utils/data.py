@@ -1,5 +1,6 @@
 import streamlit as st
 import ccxt
+from coinpaprika import client as Coinpaprika
 import pandas as pd
 
 # @st.cache(allow_output_mutation=True)
@@ -41,8 +42,18 @@ def get_history(keys, timeframe='1h', limit=100, dimension='close'):
     """
     return pd.concat([get_ohlcv(key, timeframe)['close'].rename(key) for key in keys], axis=1).tail(limit)
 
+
+def top_markets(exchange='huobi', quote='USDT'):
+    # client
+    client = Coinpaprika.Client()
+    coins  = client.coins()
+    markets = client.exchange_markets(exchange, quotes="USD")
+    return [m['pair'] for c in coins for m in markets if (m['base_currency_id'] == c['id'] and m['pair'].split('/')[-1] == quote)]
+
+
 def get_market_cap(markets, base = None):
     """
+    DEPRECATED
     Load coinmarketcap data as well as base names and return a sorted dict with {cap, name} tuple.
     """
     markets_ = ccxt.coinmarketcap().load_markets()

@@ -6,7 +6,7 @@ import seaborn as sns
 import numpy as np
 import scipy.stats as sts
 
-from utils.data import load_data, get_keys, get_names, get_market_cap, get_history
+from utils.data import load_data, get_keys, get_names, top_markets, get_history
 from cointegration import find_cointegrated_pairs
 
 def load_page():
@@ -22,7 +22,7 @@ def load_page():
     st.sidebar.title("Fit SDE to Time Series")
     resolution = st.sidebar.selectbox('Select resolution', ['1d', '1h', '1m'], index=2)
 
-    keys = get_market_cap(markets, 'USDT')
+    keys = top_markets(quote='USDT')
 
     data_close = get_history(keys[:10], timeframe=resolution, limit=2000)
     data_close = data_close.dropna()
