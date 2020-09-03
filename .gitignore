@@ -1,4 +1,5 @@
 # custom
+.coinbase_secret.txt
 .ipynb_checkpoints
 .vscode
 __pycache__
