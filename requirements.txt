@@ -3,7 +3,7 @@ ccxt==1.19.76
 plotly==4.3.0
 statsmodels==0.11.0
 seaborn==0.10.0
-numpy==1.18.1
+numpy==1.22.0
 pandas==0.25.3
 scipy==1.4.1
 cma==2.7.0
